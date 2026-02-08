@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../../utils/axios";
 import { FaSave, FaTimes, FaSpinner, FaMoneyBillWave } from "react-icons/fa";
@@ -27,7 +27,6 @@ export default function NewOperation() {
     paymentMethod: "especes",
   });
 
-  // Types d'opérations urologiques
   const operationTypes = [
     "Résection bipolaire (TURP)",
     "Lithotripsie urétérale",
@@ -55,10 +54,6 @@ export default function NewOperation() {
     fetchInitialData();
   }, []);
 
-  useEffect(() => {
-    calculateFinalAmount();
-  }, [formData.totalAmount, formData.discountPercentage]);
-
   const fetchInitialData = async () => {
     try {
       const [patientsRes, doctorsRes] = await Promise.all([
@@ -74,17 +69,20 @@ export default function NewOperation() {
     }
   };
 
-  const calculateFinalAmount = () => {
+  const calculateFinalAmount = useCallback(() => {
     const discount = (formData.totalAmount * formData.discountPercentage) / 100;
     const finalAmount = formData.totalAmount - discount;
     setFormData((prev) => ({ ...prev, paidAmount: finalAmount }));
-  };
+  }, [formData.totalAmount, formData.discountPercentage]);
+
+  useEffect(() => {
+    calculateFinalAmount();
+  }, [calculateFinalAmount]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Vérifier que le paiement est complet
     const finalAmount =
       formData.totalAmount -
       (formData.totalAmount * formData.discountPercentage) / 100;
@@ -95,7 +93,6 @@ export default function NewOperation() {
     }
 
     try {
-      // Combiner date et heure
       const scheduledDateTime = new Date(
         `${formData.scheduledDate}T${formData.scheduledTime}`,
       );

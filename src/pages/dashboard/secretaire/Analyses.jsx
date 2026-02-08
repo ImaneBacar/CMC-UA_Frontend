@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import api from "../../../utils/axios";
 import {
@@ -22,10 +22,6 @@ export default function Analyses() {
     fetchAnalyses();
   }, []);
 
-  useEffect(() => {
-    filterAnalyses();
-  }, [searchTerm, filterStatus, filterCategory, analyses]);
-
   const fetchAnalyses = async () => {
     try {
       const response = await api.get("/analyses");
@@ -39,7 +35,7 @@ export default function Analyses() {
     }
   };
 
-  const filterAnalyses = () => {
+  const filterAnalyses = useCallback(() => {
     let filtered = [...analyses];
 
     if (searchTerm) {
@@ -61,7 +57,11 @@ export default function Analyses() {
     }
 
     setFilteredAnalyses(filtered);
-  };
+  }, [analyses, searchTerm, filterStatus, filterCategory]);
+
+  useEffect(() => {
+    filterAnalyses();
+  }, [filterAnalyses]);
 
   const getStatusColor = (status) => {
     switch (status) {

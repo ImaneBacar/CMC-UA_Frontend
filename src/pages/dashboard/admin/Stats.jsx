@@ -2,12 +2,9 @@ import { useEffect, useState } from "react";
 import api from "../../../utils/axios";
 import {
   FaUsers,
-  FaUserMd,
   FaStethoscope,
-  FaFlask,
   FaMoneyBillWave,
   FaCalendarAlt,
-  FaChartLine,
   FaSpinner,
 } from "react-icons/fa";
 

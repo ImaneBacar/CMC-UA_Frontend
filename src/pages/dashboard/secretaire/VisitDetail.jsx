@@ -1,17 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../../../utils/axios";
 import {
   FaArrowLeft,
   FaUser,
   FaUserMd,
-  FaCalendarAlt,
   FaMoneyBillWave,
   FaSpinner,
-  FaEdit,
+  FaCheckCircle,
   FaFlask,
   FaFileAlt,
-  FaCheckCircle,
 } from "react-icons/fa";
 
 export default function VisitDetail() {
@@ -20,11 +18,7 @@ export default function VisitDetail() {
   const [visit, setVisit] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchVisitDetails();
-  }, [id]);
-
-  const fetchVisitDetails = async () => {
+  const fetchVisitDetails = useCallback(async () => {
     try {
       const response = await api.get(`/visits/${id}`);
       console.log("Visite détail:", response.data);
@@ -35,7 +29,11 @@ export default function VisitDetail() {
       alert("Erreur lors du chargement de la visite");
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchVisitDetails();
+  }, [fetchVisitDetails]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -322,13 +320,14 @@ export default function VisitDetail() {
               </div>
             </div>
           )}
-          {/* Actions rapides - AVANT LA FERMETURE DE LA COLONNE DROITE */}
+
+          {/* Actions rapides */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Actions Rapides
             </h3>
             <div className="space-y-3">
-              {/*Créer une analyse */}
+              {/* Créer une analyse */}
               <Link
                 to={`/dashboard/analyses/new?visit=${visit._id}&patient=${visit.patient?._id || visit.patient?.id}`}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition"
@@ -337,7 +336,7 @@ export default function VisitDetail() {
                 <span className="font-medium">Prescrire une Analyse</span>
               </Link>
 
-              {/* Créer une ordonnance (si besoin) */}
+              {/* Créer une ordonnance */}
               <Link
                 to={`/dashboard/prescriptions/new?visit=${visit._id}&patient=${visit.patient?._id || visit.patient?.id}`}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition"

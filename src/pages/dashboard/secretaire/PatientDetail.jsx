@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../../../utils/axios";
 import {
@@ -19,11 +19,7 @@ export default function PatientDetail() {
   const [medicalRecord, setMedicalRecord] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchPatientDetails();
-  }, [id]);
-
-  const fetchPatientDetails = async () => {
+  const fetchPatientDetails = useCallback(async () => {
     try {
       const response = await api.get(`/patients/${id}`);
       setPatient(response.data.patient);
@@ -33,7 +29,11 @@ export default function PatientDetail() {
       console.error("Erreur chargement patient:", error);
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchPatientDetails();
+  }, [fetchPatientDetails]);
 
   const calculateAge = (dateOfBirth) => {
     const today = new Date();

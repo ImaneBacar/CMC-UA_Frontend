@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import api from "../../../utils/axios";
 import {
@@ -21,14 +21,10 @@ export default function Patients() {
     fetchPatients();
   }, []);
 
-  useEffect(() => {
-    filterPatients();
-  }, [searchTerm, filterStatus, patients]);
-
   const fetchPatients = async () => {
     try {
       const response = await api.get("/patients");
-      console.log("Patients reçus:", response.data); // Debug
+      console.log("Patients reçus:", response.data);
       setPatients(response.data.data || []);
       setLoading(false);
     } catch (error) {
@@ -38,10 +34,9 @@ export default function Patients() {
     }
   };
 
-  const filterPatients = () => {
+  const filterPatients = useCallback(() => {
     let filtered = [...patients];
 
-    // Filtre par recherche
     if (searchTerm) {
       filtered = filtered.filter(
         (p) =>
@@ -51,13 +46,16 @@ export default function Patients() {
       );
     }
 
-    // Filtre par statut
     if (filterStatus !== "all") {
       filtered = filtered.filter((p) => p.status === filterStatus);
     }
 
     setFilteredPatients(filtered);
-  };
+  }, [patients, searchTerm, filterStatus]);
+
+  useEffect(() => {
+    filterPatients();
+  }, [filterPatients]);
 
   const calculateAge = (dateOfBirth) => {
     if (!dateOfBirth) return "N/A";
@@ -81,7 +79,6 @@ export default function Patients() {
       </div>
     );
   }
-
   return (
     <div>
       {/* Header */}

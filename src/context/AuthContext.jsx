@@ -1,5 +1,11 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import api from "../utils/axios"; // ← Import de ton instance
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
+import api from "../utils/axios";
 
 const AuthContext = createContext();
 
@@ -17,18 +23,22 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [currentRole, setCurrentRole] = useState(null);
 
-  // Charger le profil au montage si token existe
-  useEffect(() => {
-    if (token) {
-      fetchUserProfile();
-    } else {
-      setLoading(false);
-    }
+  const logout = useCallback(() => {
+    setUser(null);
+    setToken(null);
+    setCurrentRole(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("currentRole");
   }, []);
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await api.get("/user/profile"); // ← Utilise 'api'
+      const response = await api.get("/user/profile");
       setUser(response.data);
 
       if (response.data.role && response.data.role.length > 0) {
@@ -42,12 +52,15 @@ export const AuthProvider = ({ children }) => {
       logout();
       setLoading(false);
     }
-  };
+  }, [token, logout]);
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, [fetchUserProfile]);
 
   const login = async (email, password) => {
     try {
       const response = await api.post("/login", {
-        // ← Utilise 'api'
         email,
         password,
       });
@@ -71,14 +84,6 @@ export const AuthProvider = ({ children }) => {
         message: error.response?.data?.message || "Erreur de connexion",
       };
     }
-  };
-
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    setCurrentRole(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("currentRole");
   };
 
   const switchRole = (newRole) => {

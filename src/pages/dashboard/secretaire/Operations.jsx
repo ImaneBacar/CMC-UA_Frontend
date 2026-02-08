@@ -1,14 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import api from "../../../utils/axios";
-import {
-  FaPlus,
-  FaSearch,
-  FaEye,
-  FaSpinner,
-  FaFilter,
-  FaCalendarAlt,
-} from "react-icons/fa";
+import { FaPlus, FaSearch, FaEye, FaSpinner, FaFilter } from "react-icons/fa";
 
 export default function Operations() {
   const [operations, setOperations] = useState([]);
@@ -20,10 +13,6 @@ export default function Operations() {
   useEffect(() => {
     fetchOperations();
   }, []);
-
-  useEffect(() => {
-    filterOperations();
-  }, [searchTerm, filterStatus, operations]);
 
   const fetchOperations = async () => {
     try {
@@ -38,7 +27,7 @@ export default function Operations() {
     }
   };
 
-  const filterOperations = () => {
+  const filterOperations = useCallback(() => {
     let filtered = [...operations];
 
     if (searchTerm) {
@@ -56,7 +45,11 @@ export default function Operations() {
     }
 
     setFilteredOperations(filtered);
-  };
+  }, [operations, searchTerm, filterStatus]);
+
+  useEffect(() => {
+    filterOperations();
+  }, [filterOperations]);
 
   const getStatusColor = (status) => {
     switch (status) {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import api from "../../../utils/axios";
 import {
@@ -23,10 +23,6 @@ export default function Payments() {
     fetchPayments();
   }, []);
 
-  useEffect(() => {
-    filterPayments();
-  }, [searchTerm, filterStatus, filterDate, payments]);
-
   const fetchPayments = async () => {
     try {
       const response = await api.get("/payments");
@@ -40,7 +36,7 @@ export default function Payments() {
     }
   };
 
-  const filterPayments = () => {
+  const filterPayments = useCallback(() => {
     let filtered = [...payments];
 
     // Filtre par recherche
@@ -77,7 +73,11 @@ export default function Payments() {
     }
 
     setFilteredPayments(filtered);
-  };
+  }, [payments, searchTerm, filterStatus, filterDate]);
+
+  useEffect(() => {
+    filterPayments();
+  }, [filterPayments]);
 
   const getStatusColor = (status) => {
     switch (status) {

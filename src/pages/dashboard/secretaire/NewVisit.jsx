@@ -1,13 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../../utils/axios";
-import {
-  FaSave,
-  FaTimes,
-  FaSpinner,
-  FaSearch,
-  FaMoneyBillWave,
-} from "react-icons/fa";
+import { FaSave, FaTimes, FaSpinner, FaMoneyBillWave } from "react-icons/fa";
 
 export default function NewVisit() {
   const navigate = useNavigate();
@@ -36,18 +30,6 @@ export default function NewVisit() {
   useEffect(() => {
     fetchInitialData();
   }, []);
-
-  useEffect(() => {
-    if (formData.speciality) {
-      filterDoctorsBySpeciality(formData.speciality);
-    } else {
-      setFilteredDoctors(doctors);
-    }
-  }, [formData.speciality, doctors]);
-
-  useEffect(() => {
-    calculateFinalAmount();
-  }, [formData.totalAmount, formData.discountPercentage]);
 
   useEffect(() => {
     if (preSelectedPatientId && patients.length > 0) {
@@ -83,24 +65,36 @@ export default function NewVisit() {
       alert("Erreur chargement données");
     }
   };
-  const filterDoctorsBySpeciality = (specialityId) => {
-    const filtered = doctors.filter((doctor) =>
-      doctor.speciality?.some((spec) => spec._id === specialityId),
-    );
-    setFilteredDoctors(filtered);
-  };
 
-  const calculateFinalAmount = () => {
+  const filterDoctorsBySpeciality = useCallback(() => {
+    if (!formData.speciality) {
+      setFilteredDoctors(doctors);
+    } else {
+      const filtered = doctors.filter((doctor) =>
+        doctor.speciality?.some((spec) => spec._id === formData.speciality),
+      );
+      setFilteredDoctors(filtered);
+    }
+  }, [formData.speciality, doctors]);
+
+  useEffect(() => {
+    filterDoctorsBySpeciality();
+  }, [filterDoctorsBySpeciality]);
+
+  const calculateFinalAmount = useCallback(() => {
     const discount = (formData.totalAmount * formData.discountPercentage) / 100;
     const finalAmount = formData.totalAmount - discount;
     setFormData((prev) => ({ ...prev, paidAmount: finalAmount }));
-  };
+  }, [formData.totalAmount, formData.discountPercentage]);
+
+  useEffect(() => {
+    calculateFinalAmount();
+  }, [calculateFinalAmount]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    // Vérifier que le paiement est complet
     const finalAmount =
       formData.totalAmount -
       (formData.totalAmount * formData.discountPercentage) / 100;
@@ -111,7 +105,7 @@ export default function NewVisit() {
     }
 
     try {
-      const response = await api.post("/visit", formData);
+      await api.post("/visit", formData);
       alert("Visite créée avec succès !");
       navigate(`/dashboard/visites`);
     } catch (error) {

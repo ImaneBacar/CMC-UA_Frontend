@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../../../utils/axios";
 import {
@@ -18,11 +18,7 @@ export default function AnalysisDetail() {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchAnalysisDetails();
-  }, [id]);
-
-  const fetchAnalysisDetails = async () => {
+  const fetchAnalysisDetails = useCallback(async () => {
     try {
       const response = await api.get(`/analyses/${id}`);
       console.log("Analyse détail:", response.data);
@@ -33,7 +29,11 @@ export default function AnalysisDetail() {
       alert("Erreur lors du chargement de l'analyse");
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchAnalysisDetails();
+  }, [fetchAnalysisDetails]);
 
   const getStatusColor = (status) => {
     switch (status) {

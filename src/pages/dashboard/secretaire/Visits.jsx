@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import api from "../../../utils/axios";
 import {
@@ -22,14 +22,9 @@ export default function Visits() {
     fetchVisits();
   }, []);
 
-  useEffect(() => {
-    filterVisits();
-  }, [searchTerm, filterDate, filterStatus, visits]);
-
   const fetchVisits = async () => {
     try {
       const response = await api.get("/visits");
-      console.log("Visites reçues:", response.data);
       console.log("Visites reçues:", response.data);
       setVisits(response.data.data || []);
       setLoading(false);
@@ -40,7 +35,7 @@ export default function Visits() {
     }
   };
 
-  const filterVisits = () => {
+  const filterVisits = useCallback(() => {
     let filtered = [...visits];
 
     // Filtre par recherche
@@ -53,7 +48,7 @@ export default function Visits() {
           v.patient?.patientNumber
             ?.toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
-          v.numeroVisite?.toLowerCase().includes(searchTerm.toLowerCase()),
+          v.visitNumber?.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
@@ -80,11 +75,16 @@ export default function Visits() {
     }
 
     setFilteredVisits(filtered);
-  };
+  }, [visits, searchTerm, filterDate, filterStatus]);
+
+  useEffect(() => {
+    filterVisits();
+  }, [filterVisits]);
 
   const getStatusColor = (status) => {
     switch (status) {
       case "en attente":
+      case "en attente de consultation":
         return "bg-yellow-100 text-yellow-700";
       case "en consultation":
         return "bg-blue-100 text-blue-700";
@@ -166,6 +166,9 @@ export default function Visits() {
             >
               <option value="all">Tous les statuts</option>
               <option value="en attente">En attente</option>
+              <option value="en attente de consultation">
+                En attente de consultation
+              </option>
               <option value="en consultation">En consultation</option>
               <option value="terminé">Terminé</option>
               <option value="annulé">Annulé</option>

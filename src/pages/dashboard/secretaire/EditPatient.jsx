@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../utils/axios";
 import { FaSave, FaTimes, FaSpinner } from "react-icons/fa";
@@ -29,11 +29,7 @@ export default function EditPatient() {
     status: "actif",
   });
 
-  useEffect(() => {
-    fetchPatient();
-  }, [id]);
-
-  const fetchPatient = async () => {
+  const fetchPatient = useCallback(async () => {
     try {
       const response = await api.get(`/patients/${id}`);
       const patient = response.data.patient;
@@ -65,7 +61,11 @@ export default function EditPatient() {
       alert("Erreur lors du chargement du patient");
       setFetching(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchPatient();
+  }, [fetchPatient]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,14 +80,6 @@ export default function EditPatient() {
       alert(error.response?.data?.message || "Erreur lors de la modification");
       setLoading(false);
     }
-  };
-
-  const handleArrayInput = (field, value) => {
-    const array = value
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
-    setFormData({ ...formData, [field]: array });
   };
 
   if (fetching) {
