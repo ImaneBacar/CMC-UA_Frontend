@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5014/api'
+  baseURL: 'https://cmc-ua-backend.onrender.com'
 });
 
 // Intercepteur pour ajouter le token ET le rôle actif
