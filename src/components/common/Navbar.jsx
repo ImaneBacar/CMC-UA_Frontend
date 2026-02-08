@@ -19,7 +19,7 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ✅ Utiliser le contexte d'authentification
+  // Utiliser le contexte d'authentification
   const { user, isAuthenticated, logout, currentRole } = useAuth();
 
   const isActive = (path) => {
@@ -52,7 +52,7 @@ export default function Navbar() {
                 className="flex items-center gap-2 hover:text-primary-200 transition"
               >
                 <FaPhone size={14} />
-                <span className="hidden sm:inline">+269 333 XX XX</span>
+                <span className="hidden sm:inline">+269 XX XX XX</span>
               </a>
 
               <a
@@ -64,7 +64,7 @@ export default function Navbar() {
               </a>
             </div>
             <div className="text-xs hidden md:block">
-              🚨 Urgences 24/7 : +269 777 XX XX
+              Urgences 24/7 : +269 XX XX XX
             </div>
           </div>
         </div>
@@ -106,7 +106,6 @@ export default function Navbar() {
 
             {/* Boutons CTA Desktop */}
             <div className="hidden lg:flex items-center gap-3">
-              {/* ✅ BOUTON ESPACE PROFESSIONNEL OU AVATAR */}
               {!isAuthenticated ? (
                 <button
                   onClick={() => setShowLoginModal(true)}
@@ -169,7 +168,7 @@ export default function Navbar() {
           {/* Menu Mobile */}
           {isOpen && (
             <div className="lg:hidden pb-4">
-              {/* ✅ BOUTON ESPACE PRO OU PROFIL (Mobile) */}
+              {/*  BOUTON ESPACE PRO */}
               {!isAuthenticated ? (
                 <button
                   onClick={() => {
@@ -248,7 +247,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* ✅ MODAL DE CONNEXION */}
+      {/* MODAL DE CONNEXION */}
       <LoginModal
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}

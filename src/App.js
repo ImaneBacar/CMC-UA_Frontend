@@ -28,6 +28,10 @@ import Visits from './pages/dashboard/secretaire/Visits';
 import VisitDetail from './pages/dashboard/secretaire/VisitDetail';
 import Operations from './pages/dashboard/secretaire/Operations';
 import NewOperation from './pages/dashboard/secretaire/NewOperation';
+import NewAnalysis from './pages/dashboard/secretaire/NewAnalysis';
+import Analyses from './pages/dashboard/secretaire/Analyses';
+import AnalysisDetail from './pages/dashboard/secretaire/AnalysisDetail';
+import Payments from './pages/dashboard/secretaire/Payments';
 
 
 function App() {
@@ -61,8 +65,12 @@ function App() {
           <Route path="visites" element={<Visits />} />
           <Route path="visites/new" element={<NewVisit />} />
           <Route path="visites/:id" element={<VisitDetail />} />
-<Route path="operations" element={<Operations />} />
-  <Route path="operations/new" element={<NewOperation />} />
+          <Route path="operations" element={<Operations />} />
+          <Route path="operations/new" element={<NewOperation />} />
+          <Route path="analyses" element={<Analyses />} />
+          <Route path="analyses/new" element={<NewAnalysis />} />
+          <Route path="analyses/:id" element={<AnalysisDetail />} />
+<Route path="paiements" element={<Payments />} />
 
         </Route>
 

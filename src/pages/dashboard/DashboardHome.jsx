@@ -12,13 +12,13 @@ export default function DashboardHome() {
     case "secretaire":
       return <SecretaireDashboard />;
     case "medecin":
-      // return <MedecinDashboard />; // À créer plus tard
+      // return <MedecinDashboard />;
       return <div className="p-6">Dashboard Médecin - En construction</div>;
     case "laborantin":
-      // return <LaborantinDashboard />; // À créer plus tard
+      // return <LaborantinDashboard />;
       return <div className="p-6">Dashboard Laborantin - En construction</div>;
     case "comptable":
-      // return <ComptableDashboard />; // À créer plus tard
+      // return <ComptableDashboard />;
       return <div className="p-6">Dashboard Comptable - En construction</div>;
     default:
       return <AdminDashboard />;

@@ -42,6 +42,8 @@ export default function Sidebar() {
         icon: FaUserMd,
         label: "Consultations",
       },
+      { path: "/dashboard/analyses", icon: FaFlask, label: "Analyses" },
+
       {
         path: "/dashboard/operations",
         icon: FaStethoscope,
@@ -53,6 +55,8 @@ export default function Sidebar() {
       { path: "/dashboard", icon: FaTachometerAlt, label: "Tableau de bord" },
       { path: "/dashboard/patients", icon: FaUsers, label: "Patients" },
       { path: "/dashboard/visites", icon: FaCalendarAlt, label: "Visites" },
+      { path: "/dashboard/analyses", icon: FaFlask, label: "Analyses" }, // ← AJOUTER
+
       {
         path: "/dashboard/operations",
         icon: FaStethoscope,
@@ -69,6 +73,7 @@ export default function Sidebar() {
     laborantin: [
       { path: "/dashboard", icon: FaTachometerAlt, label: "Tableau de bord" },
       { path: "/dashboard/analyses", icon: FaFlask, label: "Analyses" },
+
       { path: "/dashboard/settings", icon: FaCog, label: "Paramètres" },
     ],
     comptable: [

@@ -9,6 +9,8 @@ import {
   FaMoneyBillWave,
   FaSpinner,
   FaEdit,
+  FaFlask,
+  FaFileAlt,
   FaCheckCircle,
 } from "react-icons/fa";
 
@@ -320,6 +322,31 @@ export default function VisitDetail() {
               </div>
             </div>
           )}
+          {/* Actions rapides - AVANT LA FERMETURE DE LA COLONNE DROITE */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Actions Rapides
+            </h3>
+            <div className="space-y-3">
+              {/*Créer une analyse */}
+              <Link
+                to={`/dashboard/analyses/new?visit=${visit._id}&patient=${visit.patient?._id || visit.patient?.id}`}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition"
+              >
+                <FaFlask />
+                <span className="font-medium">Prescrire une Analyse</span>
+              </Link>
+
+              {/* Créer une ordonnance (si besoin) */}
+              <Link
+                to={`/dashboard/prescriptions/new?visit=${visit._id}&patient=${visit.patient?._id || visit.patient?.id}`}
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition"
+              >
+                <FaFileAlt />
+                <span className="font-medium">Créer une Ordonnance</span>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>
