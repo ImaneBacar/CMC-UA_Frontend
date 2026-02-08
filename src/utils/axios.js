@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL
+  baseURL: process.env.REACT_APP_API_URL || "https://cmc-ua-backend.onrender.com/api/health"
 });
 
 // Intercepteur pour ajouter le token ET le rôle actif

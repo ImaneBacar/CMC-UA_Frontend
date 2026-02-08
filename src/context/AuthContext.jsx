@@ -59,6 +59,8 @@ export const AuthProvider = ({ children }) => {
   }, [fetchUserProfile]);
 
   const login = async (email, password) => {
+    console.log("entative de connexion à:", api.defaults.baseURL);
+    console.log("Email:", email);
     try {
       const response = await api.post("/login", {
         email,
